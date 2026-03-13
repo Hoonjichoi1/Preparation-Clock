@@ -1,15 +1,18 @@
 {
-    "total time": 50,
     "tasks": [
         {
-            "name": "cooking",
+            "name": "makeup",
+            "category": "BEAUTY",
             "time": 30,
-            "status": false
+            "optional": false,
+            "completed": false
         },
         {
-            "name": "showering",
+            "name": "cooking",
+            "category": "FOOD",
             "time": 20,
-            "status": false
+            "optional": false,
+            "completed": false
         }
     ]
 }

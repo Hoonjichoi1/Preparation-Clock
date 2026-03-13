@@ -1,7 +1,7 @@
 package model;
 
-import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -10,7 +10,7 @@ import persistence.Writable;
 
 // Represents today's preparation plan consisting of multiple prep tasks.
 public class TaskToday implements Writable {
-    private ArrayList<Task> tasks;
+    private List<Task> tasks;
 
     // EFFECTS : initialize TaskToday with empty task list
     public TaskToday() {
@@ -24,26 +24,8 @@ public class TaskToday implements Writable {
     }
 
     // EFFECTS : return the list of tasks user has set in the list
-    public ArrayList<Task> getTasks() {
+    public List<Task> getTasks() {
         return tasks;
-    }
-
-    // EFFECTS : return the total amount of time of incompleted tasks
-    public int totalTime() {
-        int total = 0;
-        for (Task t : tasks) {
-            if (!t.isCompleted()) {
-                total += t.getTime();
-            }
-        }
-        return total;
-    }
-
-    // REQUIRES : departTime must be "HH:MM" form
-    // EFFECTS : return the time when we need to start getting ready for departing
-    // at time
-    public LocalTime estimateStartTime(LocalTime departTime) {
-        return departTime.minusMinutes(totalTime());
     }
 
     // MODIFIES : tasks
@@ -77,7 +59,6 @@ public class TaskToday implements Writable {
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
         json.put("tasks", tasksToJson());
-        json.put("total time", totalTime());
         return json;
     }
 
@@ -91,4 +72,5 @@ public class TaskToday implements Writable {
 
         return jsonArray;
     }
+
 }

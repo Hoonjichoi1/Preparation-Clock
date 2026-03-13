@@ -2,8 +2,6 @@ package model;
 
 import static org.junit.Assert.assertEquals;
 
-import java.time.LocalTime;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -19,10 +17,10 @@ public class TestTaskToday {
 
     @BeforeEach
     void runBefore() {
-        task1 = new Task("makeup", 20);
-        task2 = new Task("shower", 25);
-        task3 = new Task("hair", 10);
-        task4 = new Task("breakfast", 30);
+        task1 = new Task("makeup", TaskCategory.BEAUTY, 20, false);
+        task2 = new Task("shower", TaskCategory.HYGIENE, 26, false);
+        task3 = new Task("hair", TaskCategory.BEAUTY, 10, false);
+        task4 = new Task("breakfast", TaskCategory.FOOD, 30, false);
         taskToday = new TaskToday();
     }
 
@@ -46,84 +44,6 @@ public class TestTaskToday {
         assertEquals(task2, taskToday.getTasks().get(1));
         assertEquals(task3, taskToday.getTasks().get(2));
         assertEquals(task4, taskToday.getTasks().get(3));
-    }
-
-    // test totalTime
-    @Test
-    void testTotalTimeEmptyTask() {
-        assertEquals(0, taskToday.totalTime());
-    }
-
-    @Test
-    void testTotalTimeSingleTask() {
-        taskToday.addTask(task1);
-        assertEquals(20, taskToday.totalTime());
-    }
-
-    @Test
-    void testTotalTimeSingleCompletedTask() {
-        taskToday.addTask(task1);
-        assertEquals(20, taskToday.totalTime());
-        taskToday.getTasks().get(0).markCompleted();
-        assertEquals(0, taskToday.totalTime());
-    }
-
-    @Test
-    void testTotalTimeMultipleTask() {
-        taskToday.addTask(task1);
-        taskToday.addTask(task2);
-        taskToday.addTask(task3);
-        taskToday.addTask(task4);
-        assertEquals(85, taskToday.totalTime());
-    }
-
-    @Test
-    void testTotalTimeAfterRemoveTask() {
-        taskToday.addTask(task1);
-        taskToday.addTask(task2);
-        taskToday.addTask(task3);
-        taskToday.addTask(task4);
-        assertEquals(85, taskToday.totalTime());
-
-        taskToday.removeTask("makeup");
-        assertEquals(65, taskToday.totalTime());
-    }
-
-    // test estimateStartTime
-    @Test
-    void testEstimateStartTimeWithNoTask() {
-        taskToday.addTask(task1);
-        assertEquals(20, taskToday.totalTime());
-        assertEquals(LocalTime.parse("10:00"), taskToday.estimateStartTime(LocalTime.parse("10:20")));
-    }
-
-    @Test
-    void testEstimateStartTimeHourBorrow() {
-        taskToday.addTask(task4);
-        assertEquals(30, taskToday.totalTime());
-        assertEquals(LocalTime.parse("09:50"), taskToday.estimateStartTime(LocalTime.parse("10:20")));
-    }
-
-    @Test
-    void testEstimateStartTimeMinuteBorrow() {
-        taskToday.addTask(task2);
-        assertEquals(25, taskToday.totalTime());
-        assertEquals(LocalTime.parse("10:05"), taskToday.estimateStartTime(LocalTime.parse("10:30")));
-    }
-
-    @Test
-    void testEstimateStartTimeWrap() {
-        taskToday.addTask(task2);
-        assertEquals(25, taskToday.totalTime());
-        assertEquals(LocalTime.parse("23:55"), taskToday.estimateStartTime(LocalTime.parse("00:20")));
-    }
-
-    @Test
-    void testEstimateStartTime() {
-        taskToday.addTask(task1);
-        taskToday.addTask(task2);
-        assertEquals(45, taskToday.totalTime());
-        assertEquals(LocalTime.parse("09:45"), taskToday.estimateStartTime(LocalTime.parse("10:30")));
     }
 
     // test removeTask

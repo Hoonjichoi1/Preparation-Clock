@@ -1,6 +1,7 @@
 package persistence;
 
 import model.Task;
+import model.TaskCategory;
 import model.TaskToday;
 import org.junit.jupiter.api.Test;
 
@@ -12,9 +13,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExcludeFromJacocoGeneratedReport
 class JsonWriterTest extends JsonTest {
-    //NOTE TO CPSC 210 STUDENTS: the strategy in designing tests for the JsonWriter is to
-    //write data to a file and then use the reader to read it back in and check that we
-    //read in a copy of what was written out.
 
     @Test
     void testWriterInvalidFile() {
@@ -39,7 +37,6 @@ class JsonWriterTest extends JsonTest {
             JsonReader reader = new JsonReader("./data/testWriterEmptyTaskToday.json");
             tt = reader.read();
             assertEquals(0, tt.getTasks().size());
-            assertEquals(0, tt.totalTime());
         } catch (IOException e) {
             fail("Exception should not have been thrown");
         }
@@ -49,9 +46,9 @@ class JsonWriterTest extends JsonTest {
     void testWriterGeneralTaskToday() {
         try {
             TaskToday tt = new TaskToday();
-            tt.addTask(new Task("breakfast", 15));
-            tt.addTask(new Task("shower", 10));
-            tt.addTask(new Task("makeup", 20));
+            tt.addTask(new Task("breakfast", TaskCategory.FOOD, 15, false));
+            tt.addTask(new Task("shower", TaskCategory.HYGIENE, 10, false));
+            tt.addTask(new Task("makeup", TaskCategory.BEAUTY, 20, false));
             tt.getTasks().get(1).markCompleted();
 
             JsonWriter writer = new JsonWriter("./data/testWriterGeneralTaskToday.json");
@@ -62,10 +59,9 @@ class JsonWriterTest extends JsonTest {
             JsonReader reader = new JsonReader("./data/testWriterGeneralTaskToday.json");
             tt = reader.read();
             assertEquals(3, tt.getTasks().size());
-            assertEquals(35, tt.totalTime());
-            checkTask("breakfast", 15, false, tt.getTasks().get(0));
-            checkTask("shower", 10, true, tt.getTasks().get(1));
-            checkTask("makeup", 20, false, tt.getTasks().get(2));
+            checkTask("breakfast", TaskCategory.FOOD, 15, false, false, tt.getTasks().get(0));
+            checkTask("shower", TaskCategory.HYGIENE, 10, false, true, tt.getTasks().get(1));
+            checkTask("makeup", TaskCategory.BEAUTY, 20, false, false, tt.getTasks().get(2));
 
         } catch (IOException e) {
             fail("Exception should not have been thrown");

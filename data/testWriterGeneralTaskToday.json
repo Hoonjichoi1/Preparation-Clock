@@ -1,20 +1,23 @@
-{
-    "total time": 35,
-    "tasks": [
-        {
-            "name": "breakfast",
-            "time": 15,
-            "status": false
-        },
-        {
-            "name": "shower",
-            "time": 10,
-            "status": true
-        },
-        {
-            "name": "makeup",
-            "time": 20,
-            "status": false
-        }
-    ]
-}
+{"tasks": [
+    {
+        "name": "breakfast",
+        "optional": false,
+        "time": 15,
+        "completed": false,
+        "category": "FOOD"
+    },
+    {
+        "name": "shower",
+        "optional": false,
+        "time": 10,
+        "completed": true,
+        "category": "HYGIENE"
+    },
+    {
+        "name": "makeup",
+        "optional": false,
+        "time": 20,
+        "completed": false,
+        "category": "BEAUTY"
+    }
+]}

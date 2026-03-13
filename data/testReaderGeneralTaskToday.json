@@ -2,19 +2,24 @@
     "tasks": [
         {
             "name": "shower",
+            "category": "HYGIENE",
             "time": 10,
-            "status" : true
+            "optional": false,
+            "completed" : true
         },
         {
             "name": "breakfast",
+            "category": "FOOD",
             "time": 15,
-            "status" : false
+            "optional": false,
+            "completed" : false
         },
         {
             "name": "makeup",
+            "category": "BEAUTY",
             "time": 20,
-            "status" : false
+            "optional": false,
+            "completed" : false
         }
-    ],
-    "total time": 45
+    ]
 }

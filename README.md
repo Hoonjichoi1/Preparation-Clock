@@ -11,10 +11,10 @@ This application is intended for people who frequently underestimate how long it
 
 ## User Stories
 *As a user, I want to be able to:*
-- Add a new task for today and customize the name, and duration time 
-- Remove multiple tasks in today’s plan
+- Add and remove preparation tasks for today and customize the name, category, and duration time 
 - View the tasks currently in my plan
 - Enter a departure time and see when I should start preparing
+- Choose pace (TIGHT, NORMAL, RELAXED), so calculator estimate time depending on the pace
 - Save my task list to file (if I so choose)
 - Load my task list from file (if I so choose)
 

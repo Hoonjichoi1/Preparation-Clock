@@ -3,19 +3,23 @@ package ui;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalTime;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import persistence.JsonReader;
 import persistence.JsonWriter;
 
 import ca.ubc.cs.ExcludeFromJacocoGeneratedReport;
 import model.Task;
+import model.TaskCategory;
 import model.TaskToday;
+import model.Pace;
+import model.PrepPlan;
 
 // Preparation Clock application
 @ExcludeFromJacocoGeneratedReport
 public class PreparationClockApp {
     private static final String JSON_STORE = "./data/TaskToday.json";
+    private PrepPlan prepPlan;
     private TaskToday tasks;
     private Scanner input;
     private JsonWriter jsonWriter;
@@ -23,7 +27,6 @@ public class PreparationClockApp {
 
     public PreparationClockApp() throws FileNotFoundException {
         input = new Scanner(System.in);
-        tasks = new TaskToday();
         jsonWriter = new JsonWriter(JSON_STORE);
         jsonReader = new JsonReader(JSON_STORE);
         runPreparationClockApp();
@@ -79,6 +82,7 @@ public class PreparationClockApp {
     // EFFECTS: initializes tasks
     private void init() {
         tasks = new TaskToday();
+        prepPlan = new PrepPlan(tasks);
         input = new Scanner(System.in);
         input.useDelimiter("\r?\n|\r");
     }
@@ -102,10 +106,21 @@ public class PreparationClockApp {
         System.out.print("Task name: ");
         String name = input.next();
 
+        for (TaskCategory c : TaskCategory.values()) {
+            System.out.println("- " + c);
+        }
+        System.out.print("(not case-sensitive)");
+        System.out.print("Catergory: ");
+        String categoryStr = input.next().toUpperCase();
+        TaskCategory category = TaskCategory.valueOf(categoryStr);
+
         System.out.print("Minutes: ");
         int time = input.nextInt();
 
-        Task task = new Task(name, time);
+        System.out.print("Is it optional task? (true/false)");
+        boolean optional = input.nextBoolean();
+
+        Task task = new Task(name, category, time, optional);
         tasks.addTask(task);
 
         System.out.println("Added.");
@@ -121,10 +136,9 @@ public class PreparationClockApp {
         if (t != null) {
             tasks.findTask(name).markCompleted();
             System.out.println("Marked.");
-            System.out.println("Remaining total time is " + tasks.totalTime());
         } else {
             System.out.println("Not found");
-            System.out.println("Remaining total time is " + tasks.totalTime());
+            System.out.println("Remaining total time is " + prepPlan.totalTime());
         }
     }
 
@@ -136,10 +150,10 @@ public class PreparationClockApp {
 
         if (tasks.removeTask(name)) {
             System.out.println("Removed.");
-            System.out.println("Remaining total time is " + tasks.totalTime());
+            System.out.println("Remaining total time is " + prepPlan.totalTime());
         } else {
             System.out.println("Not found.");
-            System.out.println("Remaining total time is " + tasks.totalTime());
+            System.out.println("Remaining total time is " + prepPlan.totalTime());
         }
 
     }
@@ -147,11 +161,12 @@ public class PreparationClockApp {
     // MODIFIES: this
     // EFFECTS : conducts a the list of task view
     private void doViewTasks() {
-        ArrayList<Task> viewTasks = tasks.getTasks();
+        List<Task> viewTasks = tasks.getTasks();
 
         System.out.println("Today's Tasks");
         for (Task t : viewTasks) {
-            System.out.println(t.getName() + " : " + t.getTime() + " minutes" + " / status : " + t.isCompleted());
+            System.out.println(t.getCategory() + " - " + t.getName() + " : " + t.getTime() + " minutes"
+                    + " / completed : " + t.isCompleted());
         }
 
     }
@@ -161,11 +176,20 @@ public class PreparationClockApp {
     private void doShowStartTime() {
         System.out.print("Enter your departure time (HH:MM) : ");
         String time = input.next();
-
         LocalTime dep = LocalTime.parse(time);
 
-        LocalTime start = tasks.estimateStartTime(dep);
-        System.out.println("Total time for tasks : " + tasks.totalTime());
+        System.out.println("Total time for tasks : " + prepPlan.totalTime());
+
+        System.out.print("Select the pace today");
+        System.out.print("(not case-sensitive)");
+        for (Pace p : Pace.values()) {
+            System.out.println("- " + p);
+        }
+        String paceStr = input.next().toUpperCase();
+        Pace pace = Pace.valueOf(paceStr);
+        prepPlan.setPace(pace);
+
+        LocalTime start = prepPlan.estimateStartTime(dep);
         System.out.println("You need to start prepareing at: " + start);
 
     }
@@ -187,53 +211,11 @@ public class PreparationClockApp {
     protected void loadTaskToday() {
         try {
             tasks = jsonReader.read();
+            prepPlan = new PrepPlan(tasks);
             System.out.println("Loaded from " + JSON_STORE);
         } catch (IOException e) {
             System.out.println("Unable to read from file: " + JSON_STORE);
         }
-    }
-
-
-    // Add GUI-friendly methods
-    public void addTask(String name, int time) {
-        Task task = new Task(name, time);
-        tasks.addTask(task);
-    }
-
-    public ArrayList<Task> getTasks() {
-        return tasks.getTasks();
-    }
-
-    public int getTotalTime() {
-        return tasks.totalTime();
-    }
-
-    public boolean markTaskCompleted(String name) {
-        Task task = tasks.findTask(name);
-
-        if (task == null) {
-            return false;
-        }
-
-        task.markCompleted();
-        return true;
-    }
-
-    public boolean removeTask(String name) {
-        return tasks.removeTask(name);
-    }
-
-    public Task findTask(String name) {
-        return tasks.findTask(name);
-    }
-
-    public LocalTime estimateStartTime(LocalTime departTime) {
-        return tasks.estimateStartTime(departTime);
-    }
-
-    public LocalTime estimateStartTime(int hour, int minute) {
-        LocalTime departTime = LocalTime.of(hour, minute);
-        return tasks.estimateStartTime(departTime);
     }
 
 }

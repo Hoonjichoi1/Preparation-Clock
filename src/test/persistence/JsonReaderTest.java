@@ -3,6 +3,7 @@ package persistence;
 import org.junit.jupiter.api.Test;
 
 import ca.ubc.cs.ExcludeFromJacocoGeneratedReport;
+import model.TaskCategory;
 import model.TaskToday;
 
 import java.io.IOException;
@@ -29,7 +30,6 @@ class JsonReaderTest extends JsonTest {
         try {
             TaskToday tt = reader.read();
             assertEquals(0, tt.getTasks().size());
-            assertEquals(0, tt.totalTime());
         } catch (IOException e) {
             fail("Couldn't read from file");
         }
@@ -41,9 +41,9 @@ class JsonReaderTest extends JsonTest {
         try {
             TaskToday tt = reader.read();
             assertEquals(3, tt.getTasks().size());
-            checkTask("shower", 10, true, tt.getTasks().get(0));
-            checkTask("breakfast", 15, false, tt.getTasks().get(1));
-            checkTask("makeup", 20, false, tt.getTasks().get(2));
+            checkTask("shower", TaskCategory.HYGIENE, 10, false, true, tt.getTasks().get(0));
+            checkTask("breakfast", TaskCategory.FOOD, 15, false, false, tt.getTasks().get(1));
+            checkTask("makeup", TaskCategory.BEAUTY, 20, false, false, tt.getTasks().get(2));
         } catch (IOException e) {
             fail("Couldn't read from file");
         }

@@ -13,13 +13,14 @@ public class TestTask {
 
     @BeforeEach 
     void setup() {
-        task = new Task("makeup", 30);
+            task = new Task("makeup",TaskCategory.BEAUTY, 20, false);
     }
 
     @Test
     void testConstructor() {
         assertEquals("makeup", task.getName());
-        assertEquals(30, task.getTime());
+        assertEquals(TaskCategory.BEAUTY, task.getCategory());
+        assertEquals(20, task.getTime());
     }
 
     @Test

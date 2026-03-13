@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.util.stream.Stream;
 
 import model.Task;
+import model.TaskCategory;
 import model.TaskToday;
 
 import org.json.*;
@@ -61,10 +62,13 @@ public class JsonReader {
     // EFFECTS: parses task from JSON object and adds it to TaskToday
     private void addTask(TaskToday tt, JSONObject jsonObject) {
         String name = jsonObject.getString("name");
+        String categoryStr = jsonObject.getString("category");
+        TaskCategory category = TaskCategory.valueOf(categoryStr);
         int time = jsonObject.getInt("time");
-        boolean status = jsonObject.getBoolean("status");
-        Task task = new Task(name, time);
-        if (status) {
+        boolean optional = jsonObject.getBoolean("optional");
+        boolean completed = jsonObject.getBoolean("completed");
+        Task task = new Task(name, category, time, optional);
+        if (completed) {
             task.markCompleted();
         } else {
             task.markIncompleted();
