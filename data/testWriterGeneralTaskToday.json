@@ -1,0 +1,20 @@
+{
+    "total time": 35,
+    "tasks": [
+        {
+            "name": "breakfast",
+            "time": 15,
+            "status": false
+        },
+        {
+            "name": "shower",
+            "time": 10,
+            "status": true
+        },
+        {
+            "name": "makeup",
+            "time": 20,
+            "status": false
+        }
+    ]
+}
