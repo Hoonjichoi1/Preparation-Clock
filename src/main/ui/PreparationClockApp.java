@@ -3,6 +3,8 @@ package ui;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 import persistence.JsonReader;
@@ -74,7 +76,7 @@ public class PreparationClockApp {
         } else if (command.equals("l")) {
             loadTaskToday();
         } else {
-            System.out.println("Selection not valid...");
+            System.out.println("Selection not valid");
         }
     }
 
@@ -103,33 +105,23 @@ public class PreparationClockApp {
     // MODIFIES: this
     // EFFECTS : conducts a task addition
     private void doAddTask() {
-        System.out.print("Task name: ");
-        String name = input.next();
-
-        for (TaskCategory c : TaskCategory.values()) {
-            System.out.println("- " + c);
-        }
-        System.out.print("(not case-sensitive)");
-        System.out.print("Catergory: ");
-        String categoryStr = input.next().toUpperCase();
-        TaskCategory category = TaskCategory.valueOf(categoryStr);
-
-        System.out.print("Minutes: ");
-        int time = input.nextInt();
-
-        System.out.print("Is it optional task? (true/false)");
-        boolean optional = input.nextBoolean();
+        System.out.println("--------------------");
+        String name = validTaskName();
+        TaskCategory category = validCategory();
+        int time = validMinutes();
+        boolean optional = validOptional();
 
         Task task = new Task(name, category, time, optional);
         tasks.addTask(task);
-
-        System.out.println("Added.");
+        System.out.println("Added");
+        System.out.println("--------------------");
     }
 
     // MODIFIES: this
     // EFFECTS : conducts a task status change as complete
     private void doMarkTask() {
-        System.out.print("Task name: ");
+        System.out.println("--------------------");
+        System.out.println("Task name: ");
         String name = input.next();
 
         Task t = tasks.findTask(name);
@@ -140,12 +132,14 @@ public class PreparationClockApp {
             System.out.println("Not found");
             System.out.println("Remaining total time is " + prepPlan.totalTime());
         }
+        System.out.println("--------------------");
     }
 
     // MODIFIES: this
     // EFFECTS : conducts a task remove
     private void doRemoveTask() {
-        System.out.print("Task name: ");
+        System.out.println("--------------------");
+        System.out.println("Task name: ");
         String name = input.next();
 
         if (tasks.removeTask(name)) {
@@ -155,12 +149,14 @@ public class PreparationClockApp {
             System.out.println("Not found.");
             System.out.println("Remaining total time is " + prepPlan.totalTime());
         }
+        System.out.println("--------------------");
 
     }
 
     // MODIFIES: this
     // EFFECTS : conducts a the list of task view
     private void doViewTasks() {
+        System.out.println("--------------------");
         List<Task> viewTasks = tasks.getTasks();
 
         System.out.println("Today's Tasks");
@@ -168,34 +164,25 @@ public class PreparationClockApp {
             System.out.println(t.getCategory() + " - " + t.getName() + " : " + t.getTime() + " minutes"
                     + " / completed : " + t.isCompleted());
         }
-
+        System.out.println("--------------------");
     }
 
     // MODIFIES: this
     // EFFECTS : estimate the starting time to prepare
     private void doShowStartTime() {
-        System.out.print("Enter your departure time (HH:MM) : ");
-        String time = input.next();
-        LocalTime dep = LocalTime.parse(time);
+        System.out.println("--------------------");
+        LocalTime dep = validDepartTime();
 
         System.out.println("Total time for tasks : " + prepPlan.totalTime());
-
-        System.out.print("Select the pace today");
-        System.out.print("(not case-sensitive)");
-        for (Pace p : Pace.values()) {
-            System.out.println("- " + p);
-        }
-        String paceStr = input.next().toUpperCase();
-        Pace pace = Pace.valueOf(paceStr);
-        prepPlan.setPace(pace);
-
+        validPace();
         LocalTime start = prepPlan.estimateStartTime(dep);
         System.out.println("You need to start prepareing at: " + start);
-
+        System.out.println("--------------------");
     }
 
     // EFFECTS: saves the workroom to file
     protected void saveTaskToday() {
+        System.out.println("--------------------");
         try {
             jsonWriter.open();
             jsonWriter.write(tasks);
@@ -204,17 +191,127 @@ public class PreparationClockApp {
         } catch (FileNotFoundException e) {
             System.out.println("Unable to write to file: " + JSON_STORE);
         }
+        System.out.println("--------------------");
     }
 
     // MODIFIES: this
     // EFFECTS: loads workroom from file
     protected void loadTaskToday() {
+        System.out.println("--------------------");
         try {
             tasks = jsonReader.read();
             prepPlan = new PrepPlan(tasks);
             System.out.println("Loaded from " + JSON_STORE);
         } catch (IOException e) {
             System.out.println("Unable to read from file: " + JSON_STORE);
+        }
+        System.out.println("--------------------");
+    }
+
+    // helpers
+    private String validTaskName() {
+        String name = "";
+        while (true) {
+            System.out.print("Task name: ");
+            name = input.next().trim();
+            if (name.isEmpty()) {
+                System.out.println("Nothing entered. Try again");
+            } else if (tasks.findTask(name) == null) {
+                return name;
+            } else {
+                System.out.println("Duplicate name exists. Try again");
+            }
+        }
+
+    }
+
+    private TaskCategory validCategory() {
+        TaskCategory category = null;
+        while (true) {
+            System.out.println("Category(case-insensitive): ");
+            for (TaskCategory c : TaskCategory.values()) {
+                System.out.println("- " + c);
+            }
+            String categoryStr = input.next().toUpperCase();
+
+            try {
+                category = TaskCategory.valueOf(categoryStr);
+                return category;
+            } catch (IllegalArgumentException e) {
+                System.out.println("Wrong category entered. Try again");
+            }
+        }
+
+    }
+
+    private int validMinutes() {
+        int time = 0;
+        while (true) {
+            System.out.print("Minutes: ");
+            try {
+                time = input.nextInt();
+                if (time <= 0) {
+                    System.out.println("Minutes must be positive. Try again");
+                    continue;
+                }
+                return time;
+            } catch (IllegalArgumentException e) {
+                System.out.println("Wrong input for minutes. Try again");
+                input.next(); // clean up
+            }
+        }
+
+    }
+
+    private boolean validOptional() {
+        boolean optional = false;
+        while (true) {
+            System.out.print("Is it optional task?(true/false):");
+            try {
+                optional = input.nextBoolean();
+                return optional;
+            } catch (InputMismatchException e) {
+                System.out.println("Wrong input for optional selection. Try again");
+                input.next(); // clean up the wrong token
+            }
+        }
+
+    }
+
+    private LocalTime validDepartTime() {
+        String time = "";
+        LocalTime dep = null;
+
+        while (true) {
+            System.out.print("Enter your departure time (HH:MM) : ");
+            time = input.next();
+            try {
+                dep = LocalTime.parse(time);
+                return dep;
+            } catch (DateTimeParseException e) {
+                System.out.println("Wrong format of time has entered. It must be HH:MM");
+            }
+        }
+    }
+
+    private void validPace() {
+        while (true) {
+            System.out.println("Select the pace today");
+            System.out.println("(case-insensitive)");
+
+            for (Pace p : Pace.values()) {
+                System.out.println("- " + p);
+            }
+            String paceStr = input.next().toUpperCase();
+
+            try {
+                Pace pace = Pace.valueOf(paceStr);
+                prepPlan.setPace(pace);
+                break;
+            } catch (IllegalArgumentException e) {
+                System.out.println("Wrong pace entered");
+            }
+
         }
     }
 
