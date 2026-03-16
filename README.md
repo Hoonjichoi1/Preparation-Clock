@@ -2,11 +2,11 @@
 
 ## A departure-time-based preparation planner
 
-Preparation Clock is a desktop application that helps users plan how long it will take to get ready before leaving home. Users select preparation tasks, enter a desired departure time, and preparation pace. Based on these choices, the application calculates the total time and determines when the user should start preparing.
+Preparation Clock is a desktop application that helps users plan how long it will take to get ready before leaving home. Users select preparation tasks, enter a desired departure time, and choose a preparation pace. Based on these inputs, the application calculates the total preparation time and determines when the user should start getting ready.
 
-I tend to hate being late, and always calculate in memo app that what takes should be finished before leaving home tomorrow, how long it will take, and when I have to wake up to be done all in time. This project is of interest to me because I often underestimate preparation time and want a more realistic way to plan before going out.
+I dislike being late and often calculate preparation schedules manually in a memo app—estimating which tasks must be completed before leaving, how long they will take, and when I need to wake up to finish everything on time. This project was inspired by that habit and aims to provide a more structured and realistic way to plan preparation time.
 
-This application is intended for people who frequently underestimate how long it takes to get ready, such as students, office workers, or anyone. It is especially useful for users who want a realistic and stress-free way to plan their preparation time before leaving home.
+This application is intended for people who frequently underestimate how long it takes to get ready, such as students, office workers, or anyone with regular morning or pre-departure routines. It is especially useful for users who want a practical and stress-free way to plan their preparation time before leaving home.
 
 
 ## User Stories
