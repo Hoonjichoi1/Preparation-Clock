@@ -2,11 +2,11 @@
 
 ## A departure-time-based preparation planner
 
-Preparation Clock is a desktop application that helps users plan how long it will take to get ready before leaving home. Users select preparation tasks and enter a desired departure time. Based on these choices, the application calculates the total preparation time and determines when the user should start preparing.
+Preparation Clock is a desktop application that helps users plan how long it will take to get ready before leaving home. Users select preparation tasks, enter a desired departure time, and preparation pace. Based on these choices, the application calculates the total time and determines when the user should start preparing.
 
-This project is of interest to me because I often underestimate preparation time and want a more realistic way to plan before going out.
+I tend to hate being late, and always calculate in memo app that what takes should be finished before leaving home tomorrow, how long it will take, and when I have to wake up to be done all in time. This project is of interest to me because I often underestimate preparation time and want a more realistic way to plan before going out.
 
-This application is intended for people who frequently underestimate how long it takes to get ready, such as students, office workers, or anyone with recurring daily routines. It is especially useful for users who want a realistic and stress-free way to plan their preparation time before leaving home.
+This application is intended for people who frequently underestimate how long it takes to get ready, such as students, office workers, or anyone. It is especially useful for users who want a realistic and stress-free way to plan their preparation time before leaving home.
 
 
 ## User Stories
